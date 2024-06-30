@@ -351,8 +351,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerCamera: {fileID: 963194227}
   attackPoint: {fileID: 2012723921}
-  pushForce: 50
   bullet: {fileID: 2055416534216630553, guid: 80268ebc03a0d3d448f5e18ea131602d, type: 3}
+  magazineSize: 25
+  bulletsLeft: 25
+  reloadTime: 3
+  ammunitionDisplay: {fileID: 787369575}
+  reloadingDisplay: {fileID: 442108843}
 --- !u!1 &187202765
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,8 +687,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
