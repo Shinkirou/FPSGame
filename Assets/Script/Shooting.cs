@@ -6,6 +6,11 @@ public class Shooting : MonoBehaviour
 {
     [Header("參考物件")]
     public Camera PlayerCamera;
+    public Transform attackPoint;
+
+    [Header("子彈預置物件")]
+    public float pushForce = 50.0f;
+    public GameObject bullet;
 
     private void Update()
     {
@@ -22,7 +27,14 @@ public class Shooting : MonoBehaviour
             else
                 targetPoint = ray.GetPoint(75);  // 如果沒有打到物件，就以長度75的末端點取得一個點，存進 targetPoint
 
-            Debug.DrawRay(ray.origin, targetPoint - ray.origin, Color.red, 10); // 畫出這條射線
+            Debug.DrawRay(ray.origin, targetPoint - ray.origin, Color.red, 10); // 在測試階段將射線設定為紅色線條，來看看線條長度夠不夠？
+
+            Vector3 directionWithoutSpread = targetPoint - attackPoint.position; // 計算攻擊點與射線終點的方向
+            GameObject currentBullet = Instantiate(bullet, attackPoint.position, Quaternion.identity); // 生成子彈物件
+            currentBullet.transform.forward = directionWithoutSpread.normalized; // 把子彈轉向，讓子彈方向與飛行方向相同
+
+            // 推動子彈飛行
+            currentBullet.GetComponent<Rigidbody>().AddForce(directionWithoutSpread.normalized * pushForce, ForceMode.Impulse);
         }
     }
 }
