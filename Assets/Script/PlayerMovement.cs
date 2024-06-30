@@ -8,12 +8,18 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;          // 跳躍力道
     public float jumpCooldown;       // 設定要幾秒後才能向上跳躍
+    public float groundDrag;         // 地面的減速
 
     [Header("按鍵綁定")]
     public KeyCode jumpKey = KeyCode.Space;
 
     [Header("基本設定")]
     public Transform PlayerCamera;   // 攝影機
+
+    [Header("地板確認")]
+    public float playerHeight;       // 設定玩家高度
+    public LayerMask whatIsGround;   // 設定哪一個圖層是射線可以打到的
+    public bool grounded;            // 布林變數：有沒有打到地面
 
     private bool readyToJump;        // 設定是否可以跳躍
     private float horizontalInput;   // 左右方向按鍵的數值(-1 <= X <= +1)
@@ -34,6 +40,15 @@ public class PlayerMovement : MonoBehaviour
     {
         MyInput();
         SpeedControl();   // 偵測速度，過快就減速
+
+        // 射出一條看不到的射線，來判斷有沒有打到地面？
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        Debug.DrawRay(transform.position, new Vector3(0, -(playerHeight * 0.5f + 0.3f), 0), Color.red); // 在測試階段將射線設定為紅色線條，來看看線條長度夠不夠？
+        // 如果碰到地板，就設定一個反作用力(這個可以製造人物移動的減速感)
+        if (grounded)
+            rbFirstPerson.drag = groundDrag;
+        else
+            rbFirstPerson.drag = 0;
     }
 
     private void FixedUpdate()
@@ -48,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // 如果按下設定的跳躍按鍵
-        if (Input.GetKey(jumpKey) && readyToJump)
+        if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
             Jump();
@@ -60,8 +75,13 @@ public class PlayerMovement : MonoBehaviour
     {
         // 計算移動方向(其實就是計算X軸與Z軸兩個方向的力量)
         moveDirection = PlayerCamera.forward * verticalInput + PlayerCamera.right * horizontalInput;
-        // 推動第一人稱物件
-        rbFirstPerson.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+
+        // 如果在地面，則可以移動
+        if (grounded)
+        {
+            rbFirstPerson.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        }
+            
     }
 
     // 方法：偵測速度並減速
