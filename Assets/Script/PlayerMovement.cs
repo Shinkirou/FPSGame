@@ -71,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
     private void MovePlayer()
     {
         // 計算移動方向(其實就是計算X軸與Z軸兩個方向的力量)
@@ -78,10 +79,7 @@ public class PlayerMovement : MonoBehaviour
 
         // 如果在地面，則可以移動
         if (grounded)
-        {
             rbFirstPerson.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-        }
-            
     }
 
     // 方法：偵測速度並減速
