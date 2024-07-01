@@ -28,6 +28,7 @@ public class WeaponManagement : MonoBehaviour
         if (Input.GetMouseButtonDown(0) == true)
         {
             // 如果還有子彈，並且沒有正在重裝子彈，就可以射擊
+            Debug.Log(weaponInUse + "213");
             weaponInUse.GetComponent<Weapon>().Attack();
         }
 

@@ -24,14 +24,20 @@ public class Enemy : MonoBehaviour
         float distance = Vector3.Distance(transform.position, targetObject.transform.position);
 
         // 判斷式：判斷距離是否低於最短追蹤距離，如果與目標的距離大於最小距離，進行追蹤，否則就停止
-        if (distance <= minimunTraceDistance)
+        
+        if (distance > minimunTraceDistance)
             navMeshAgent.enabled = true;
         else
             navMeshAgent.enabled = false;
+        
     }
 
     void FixedUpdate()
     {
-        navMeshAgent.SetDestination(targetObject.transform.position);    // 讓自己往目標物的座標移動   
+        // 讓自己往目標物的座標移動   
+        if (navMeshAgent.enabled)
+        {
+            navMeshAgent.SetDestination(targetObject.transform.position);
+        }
     }
 }
